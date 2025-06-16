@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMULADOR DETRAN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #080808 50%, #292929 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #990808, #d1a711, #469e0b);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .progress {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .welcome-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 5px solid #3498db;
+        }
+
+        .welcome-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .welcome-info ul {
+            text-align: left;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(46, 204, 113, 0.4);
+        }
+	.quiz-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+        }
+        
+        .question-container h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+	.question-container img {
+            display: block;
+            margin: 15px auto;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	}
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+	}
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .question-theme {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            margin: 10px 0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .option label {
+            display: block;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.primary {
+            background: #007bff;
+        }
+
+        .nav-btn.primary:hover {
+            background: #0056b3;
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .result-score.approved {
+            color: #28a745;
+        }
+
+        .result-score.failed {
+            color: #dc3545;
+        }
+
+        .result-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .result-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .theme-result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #8e44ad, #9b59b6);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 SIMULADOR DETRAN</h1>
+            <p>Prepare-se para o exame teórico com questões reais!</p>
+        </div>
+
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="timer" id="timer">50:00</div>
+            <div class="progress" id="progress">Questão 1 de 30</div>
+        </div>
+
+        <div class="content">
+            <div id="welcomeScreen" class="welcome-screen">
+                <h2>Bem-vindo ao Simulado!</h2>
+                <div class="welcome-info">
+                    <h3>📋 Instruções do Simulado:</h3>
+                    <ul>
+                        <li><strong>30 questões</strong> selecionadas aleatoriamente</li>
+                        <li><strong>50 minutos</strong> para completar</li>
+                        <li><strong>21 acertos</strong> necessários para aprovação (70%)</li>
+                        <li>Questões sobre: Legislação de Trânsito, Direção Defensiva, Meio Ambiente, Primeiros Socorros e Mecânica Básica</li>
+                        <li>Você pode navegar entre as questões durante o teste</li>
+                    </ul>
+                </div>
+                <button class="start-btn" onclick="startSimulation()">🚀 Iniciar Simulado</button>
+            </div>
+
+            <div id="questionScreen" style="display: none;">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number" id="questionNumber">Questão 1</span>
+                        <span class="question-theme" id="questionTheme">Legislação</span>
+                    </div>
+                    <div class="question-text" id="questionText">
+                        <!-- Questão aparecerá aqui -->
+                    </div>
+                    <ul class="options" id="questionOptions">
+                        <!-- Opções aparecerão aqui -->
+                    </ul>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>← Anterior</button>
+                    <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()">Próxima →</button>
+                    <button class="nav-btn primary" id="finishBtn" onclick="finishTest()" style="display: none;">🏁 Finalizar</button>
+                </div>
+            </div>
+
+            <div id="resultScreen" class="result-screen" style="display: none;">
+                <h2>🎯 Resultado do Simulado</h2>
+                <div class="result-score" id="resultScore">0%</div>
+                <div class="result-details" id="resultDetails">
+                    <!-- Detalhes do resultado -->
+                </div>
+                <div class="result-breakdown" id="resultBreakdown">
+                    <!-- Breakdown por tema -->
+                </div>
+                <button class="restart-btn" onclick="resetSimulation()">🔄 Novo Simulado</button>
+                <button class="restart-btn" onclick="reviewAnswers()">📖 Revisar Respostas</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados com 136 questões
+        const questionsDatabase = [
+            // LEGISLAÇÃO DE TRÂNSITO (45 questões)
+    	    {
+                theme: "Legislação de Trânsito",
+                question: "<img src='img/ilustrações/ultrapassagem.png' alt='Ultrapassagem' style='max-width: 200px; margin-top: 10px;'><br>Com base no antigo artigo 203 do CTB, a situação ilustrada configura:",
+                options: 
+		["Ultrapassagem segura", 
+		"Infração leve", 
+		"Permitida em zona rural", 
+		"Infração gravíssima"],
+                correct: 3
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "<img src='img/placas/r1.png' alt='Placa R-1' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+                options: ["Proibido parar e estacionar", "Parada obrigatória", "Cruzamento perigoso", "Pare e siga"],
+                correct: 1
+            },
+	    {
+        	theme: "Legislação de Trânsito",
+        	question: "<img src='img/placas/r2.png' alt='Placa R-2' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+        	options: ["Parada obrigatória", "Proibido virar à direita", "Rotatória à frente", "Dê a preferência"],
+        	correct: 3
+    	    },
+	    {
+        	theme: "Legislação de Trânsito",
+        	question: "<img src='img/placas/r3.png' alt='Placa R-3' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+        	options: ["Sentido obrigatório", "Proibido virar à esquerda", "Sentido Proibido", "Proibido seguir em frente"],
+        	correct: 2
+    	    },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "<img src='img/placas/r4a.png' alt='Placa R-4a' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+                options: ["Proibido virar à esquerda", "Trânsito obrigatório à esquerda", "Retorno permitido à esquerda", "Proibido retorno à direita"],
+                correct: 0
+            },
+	    {
+        	theme: "Legislação de Trânsito",
+        	question: "<img src='img/placas/r5a.png' alt='Placa R-5a' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+        	options: ["Retorno permitido", "Proibido retornar à esquerda", "Rotatória à frente", "Retorno obrigatório"],
+        	correct: 1
+   	    },
+	    {
+        	theme: "Legislação de Trânsito",
+        	question: "<img src='img/placas/r5b.png' alt='Placa R-5b' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+        	options: ["Proibido retornar à direita", "Proibido ultrapassar", "Sentido Proibido", "Proibido estacionar"],
+        	correct: 1
+   	    },
+            {
+                theme: "Legislação de Trânsito",
+                question: "<img src='img/placas/r4b.png' alt='Placa R-4b' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+                options: ["Retorno permitido à esquerda", "Trânsito obrigatório à esquerda", "Proibido virar à direita", "Proibido retorno à direita"],
+                correct: 2
+            },
+	    {
+        	theme: "Legislação de Trânsito",
+        	question: "<img src='img/placas/r6a.png' alt='Placa R-6a' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+        	options: 
+		["Proibido estacionar", 
+		"Proibido parar e estacionar", 
+		"Estacionamento rotativo", 
+		"Área de carga e descarga"],
+        	correct: 0
+    	    },
+	    {
+        	theme: "Legislação de Trânsito",
+        	question: "<img src='img/placas/r6b.png' alt='Placa R-6a' style='max-width: 200px; margin-top: 10px;'><br>O que significa esta placa?",
+        	options: 
+		["Proibido estacionar", 
+		"Proibido parar e estacionar", 
+		"Estacionamento regulamentado", 
+		"Trânsito obrigatório à esquerda"],
+        	correct: 2
+    	    },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "A sinalização horizontal é composta por cinco cores:",
+                options: ["branca, preta, azul, marrom e amarela", "azul, amarela, preta, branca e cinza", "amarela, verde, vermelha, preta e branca", "amarela, vermelha, branca, azul e preta"],
+                correct: 3
+            }, 
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual é o órgão executivo federal de trânsito no Sistema Nacional de Trânsito (SNT)?",
+                options: ["CONTRAN", "DNIT", "SENATRAN", "DETRAN"],
+                correct: 2
+            }, 
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Marque a alternativa INCORRETA. São pré-requisitos ao candidato à habilitação:",
+                options: ["Possuir Cadastro de Pessoa Física (CPF)", "Possuir documento de identificação", "Saber ler e escrever", "Ser maior de 18 anos"],
+                correct: 3
+            },  
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual é a velocidade máxima permitida em vias urbanas arteriais?",
+                options: ["40 km/h", "50 km/h", "60 km/h", "70 km/h"],
+                correct: 2
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "O que significa a placa de trânsito em formato triangular na cor amarela?",
+                options: ["Proibição", "Advertência", "Regulamentação", "Indicação"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual é o limite de álcool permitido para condutores?",
+                options: ["0,05 mg/L", "Zero tolerância", "0,1 mg/L", "0,2 mg/L"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Em que situação é obrigatório o uso do farol baixo durante o dia?",
+                options: ["Sempre", "Apenas em túneis", "Em rodovias", "Todas as alternativas"],
+                correct: 3
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual é a distância mínima para parar antes da faixa de pedestres?",
+                options: ["1 metro", "2 metros", "3 metros", "5 metros"],
+                correct: 0
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "O que significa CNH categoria B?",
+                options: ["Motocicletas", "Veículos até 3.500kg", "Ônibus", "Caminhões"],
+                correct: 1
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Qual a idade mínima para obter CNH categoria D?",
+                options: ["18 anos", "20 anos", "21 anos", "22 anos"],
+                correct: 2
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Qual a idade mínima para obter CNH categoria B?",
+                options: ["16 anos", "17 anos", "18 anos", "21 anos"],
+                correct: 2
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual das seguintes ações é considerada uma infração gravíssima?",
+                options: ["Estacionar em local proibido", "Dirigir com a CNH suspensa", "Ultrapassar pela direita um veículo de transporte coletivo parado para embarque/desembarque", "Transitar com a luz baixa desregulada"],
+                correct: 1
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "O que é infração gravíssima?",
+                options: ["7 pontos", "5 pontos", "4 pontos", "3 pontos"],
+                correct: 0
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual é a função principal da Polícia Rodoviária Federal (PRF) no contexto do SNT?",
+                options: ["Julgar infrações de trânsito", "Normatizar as diretrizes de trânsito", "Executar ações rodoviárias estaduais", "Atuar como agente de fiscalização federal"],
+                correct: 3
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Qual dos seguintes órgãos está presente apenas na instância estadual do SNT?",
+                options: ["SENATRAN", "JARI", "CETRAN", "PRF"],
+                correct: 2
+            },  
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Estacionar em local proibido é infração de que natureza?",
+                options: ["Leve", "Média", "Grave", "Gravíssima"],
+                correct: 1
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "No nível municipal, quem são os responsáveis pela fiscalização do trânsito?",
+                options: ["PM", "PRF", "DER", "Agentes do Órgão Municipal"],
+                correct: 3
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual o prazo para renovação da CNH?",
+                options: ["3 anos", "5 anos", "10 anos", "Varia com a idade"],
+                correct: 3
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "<img src='https://blog.bomprecopecas.com.br/wp-content/uploads/2016/11/aquaplanagem-saiba-como-evitar.jpg' alt='Placa R-1' style='max-width: 200px; margin-top: 10px;'><br>O que é aquaplanagem?",
+                options: ["Derrapagem na chuva", "Perda de aderência", "Deslizamento no asfalto", "Todas as alternativas"],
+                correct: 3
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual a velocidade máxima em vias coletoras urbanas?",
+                options: ["30 km/h", "40 km/h", "60 km/h", "80 km/h"],
+                correct: 1
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Qual a velocidade máxima em vias locais?",
+                options: ["30 km/h", "40 km/h", "60 km/h", "80 km/h"],
+                correct: 0
+            },
+	    {
+                theme: "Legislação de Trânsito",
+                question: "Em vias de trânsito rápido a velocidade máxima permitida é de:",
+                options: ["30 km/h", "40 km/h", "60 km/h", "80 km/h"],
+                correct: 3
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "O cinto de segurança é obrigatório para:",
+                options: ["Apenas motorista", "Motorista e passageiro da frente", "Todos os ocupantes", "Apenas em rodovias"],
+                correct: 2
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "A ultrapassagem pela direita é permitida quando:",
+                options: ["Nunca", "Em vias de mão única", "Em rodovias", "Sempre"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "O que significa a cor amarela no semáforo?",
+                options: ["Pare", "Siga", "Atenção, prepare-se para parar", "Acelere"],
+                correct: 2
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Motocicletas podem circular no acostamento?",
+                options: ["Sim, sempre", "Não, nunca", "Apenas em congestionamentos", "Apenas em emergências"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "A cadeirinha para crianças é obrigatória até que idade?",
+                options: ["6 anos", "7 anos", "7 anos e meio", "8 anos"],
+                correct: 2
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Qual documento deve sempre acompanhar o veículo?",
+                options: ["Apenas CNH", "Apenas CRLV", "CNH e CRLV", "Apenas seguro"],
+                correct: 2
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "O que é preciso para converter à esquerda?",
+                options: ["Apenas sinalizar", "Sinalizar e aguardar", "Ter preferência", "Buzinar"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "Em cruzamentos sem sinalização, quem tem preferência?",
+                options: ["Quem vem da direita", "Quem vem da esquerda", "Veículo maior", "Quem chegou primeiro"],
+                correct: 0
+            },
+            {
+                theme: "Legislação de Trânsito",
+		question: "<img src='https://www.grupoberimbau.com.br/wp-content/uploads/2017/08/Como-usar-corretamente-o-tri%C3%A2ngulo-de-sinaliza%C3%A7%C3%A3o.jpg' alt='Triângulo' style='max-width: 200px; margin-top: 10px;'><br>O triângulo de segurança deve ser colocado no mínimo a quantos metros?",
+                options: [
+		"20 metros", 
+		"30 metros", 
+		"40 metros", 
+		"50 metros"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "É permitido parar em ponto de ônibus?",
+                options: ["Sim, por 3 minutos", "Não, nunca", "Apenas para embarque", "Sim, se não houver ônibus"],
+                correct: 1
+            },
+            {
+                theme: "Legislação de Trânsito",
+		question: "<img src='https://simuladodetransp.com.br/wp-content/uploads/2019/01/CNH-suspensa-Carteira-de-Motorista.png' alt='Triângulo' style='max-width: 200px; margin-top: 10px;'><br>A habilitação para dirigir pode ser suspensa por:",		
+		options: [
+		"20 pontos", 
+		"21 pontos", 
+		"25 pontos", 
+		"30 pontos"],
+                correct: 0
+            },
+            {
+                theme: "Legislação de Trânsito",
+                question: "O que significa placa R-1?",
+                options: ["Proibido virar à esquerda", "Parada obrigatória", "Proibido estacionar", "Sentido proibido"],
+                correct: 1
+            },
+
+            // DIREÇÃO DEFENSIVA (30 questões)
+            {
+                theme: "Direção Defensiva",
+                question: "Qual é o objetivo principal da direção defensiva?",
+                options: ["Ganhar tempo no trajeto", "Prevenir acidentes, mesmo em situações adversas", "Economizar combustível", "Melhorar o desempenho do veículo"],
+                correct: 1
+            },
+	    {
+                theme: "Direção Defensiva",
+                question: "Em uma rodovia molhada, o que o condutor deve fazer para dirigir defensivamente?",
+                options: ["Aumentar a velocidade para evitar aquaplanagem", "Usar farol alto em todos os momentos", "Reduzir a velocidade e manter maior distância dos outros veículos", "Ligar o pisca-alerta constantemente"],
+                correct: 2
+            },
+	    {
+                theme: "Direção Defensiva",
+                question: "Qual o comportamento mais seguro ao se aproximar de um cruzamento sem semáforo?",
+                options: ["Aumentar a velocidade para atravessar mais rápido", "Buzinar e seguir direto", "Reduzir a velocidade, observar e ceder a preferência quando necessário", "Parar o carro e esperar os outros condutores sinalizarem"],
+                correct: 2
+            },
+	    {
+                theme: "Direção Defensiva",
+                question: "Qual é a distância segura para seguir outro veículo?",
+                options: ["Regra dos 2 segundos", "Regra dos 3 segundos", "Regra dos 4 segundos", "Regra dos 5 segundos"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que é condução defensiva?",
+                options: ["Dirigir com agressividade", "Dirigir preventivamente", "Dirigir devagar", "Dirigir sem pressa"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Quando um pedestre atravessa fora da faixa, qual deve ser a atitude de um motorista que aplica direção defensiva?",
+                options: ["Reduzir a velocidade ou parar para evitar o atropelamento", "Buzinar para alertar e seguir em frente", "Acelerar para passar antes", "Ignorar, pois o erro foi do pedestre"],
+                correct: 0
+            },
+	    {
+                theme: "Direção Defensiva",
+                question: "Em neblina, deve-se:",
+                options: ["Usar farol alto", "Usar farol baixo", "Não usar farol", "Piscar o farol"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Em qual das situações abaixo o condutor está demonstrando prática de direção defensiva?",
+                options: ["Confiar que os outros motoristas sempre respeitarão a sinalização", "Planejar o trajeto com antecedência para evitar imprevistos", "Fazer curvas em alta velocidade quando não há trânsito", "Dirigir com os pneus carecas em dias secos"],
+                correct: 1
+            },
+	    {
+                theme: "Direção Defensiva",
+                question: "Ao se aproximar de uma curva, deve-se:",
+                options: ["Acelerar", "Manter velocidade", "Reduzir velocidade", "Frear bruscamente"],
+                correct: 2
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que fazer se o veículo aquaplanar?",
+                options: ["Frear forte", "Acelerar", "Não fazer movimentos bruscos", "Virar o volante"],
+                correct: 2
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Quando usar o freio motor?",
+                options: ["Nunca", "Em descidas", "Em subidas", "Sempre"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "A verificação dos espelhos deve ser feita:",
+                options: ["Apenas ao sair", "A cada 5 minutos", "Constantemente", "Apenas ao estacionar"],
+                correct: 2
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Ao dirigir com chuva, deve-se:",
+                options: ["Aumentar velocidade", "Manter velocidade", "Reduzir velocidade", "Parar no acostamento"],
+                correct: 2
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que é ponto cego?",
+                options: ["Área não visível pelos espelhos", "Defeito no veículo", "Problema de visão", "Falha nos faróis"],
+                correct: 0
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Em caso de derrapagem, deve-se:",
+                options: ["Virar para o lado oposto", "Virar para o mesmo lado", "Não mexer no volante", "Acelerar"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "A posição correta das mãos no volante é:",
+                options: ["10h e 2h", "9h e 3h", "8h e 4h", "11h e 1h"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Ao se cansar durante a viagem, deve-se:",
+                options: ["Continuar dirigindo", "Tomar café", "Parar e descansar", "Acelerar para chegar logo"],
+                correct: 2
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que é condução econômica?",
+                options: ["Dirigir devagar", "Otimizar consumo", "Não acelerar", "Usar apenas primeira marcha"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Antes de mudar de faixa, deve-se:",
+                options: ["Apenas sinalizar", "Olhar espelhos e sinalizar", "Apenas acelerar", "Buzinar"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "A velocidade deve ser reduzida:",
+                options: ["Apenas na chuva", "Em várias situações", "Apenas à noite", "Nunca"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que é hidroplanagem?",
+                options: ["Deslizar na água", "Problema no motor", "Falha nos freios", "Defeito nos pneus"],
+                correct: 0
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Em rodovias, a ultrapassagem deve ser:",
+                options: ["Rápida e segura", "Sempre devagar", "Apenas à direita", "Evitada sempre"],
+                correct: 0
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O condutor defensivo é aquele que:",
+                options: ["Dirige agressivamente", "Previne acidentes", "Não dá passagem", "Acelera sempre"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Ao estacionar em declive, as rodas devem ficar:",
+                options: ["Retas", "Viradas para a guia", "Viradas para a rua", "Não importa"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que fazer ao ver veículo de emergência?",
+                options: ["Continuar", "Acelerar", "Dar passagem", "Buzinar"],
+                correct: 2
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "A manutenção preventiva do veículo é:",
+                options: ["Desnecessária", "Importante para segurança", "Apenas estética", "Opcional"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Ao dirigir à noite, deve-se:",
+                options: ["Usar farol alto sempre", "Adequar velocidade", "Dirigir mais rápido", "Não usar farol"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "O que é efeito sanfona no trânsito?",
+                options: ["Aceleração brusca", "Frenagem em cadeia", "Mudança de faixa", "Congestionamento"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "Em cruzamentos, deve-se:",
+                options: ["Acelerar", "Reduzir velocidade", "Manter velocidade", "Buzinar"],
+                correct: 1
+            },
+            {
+                theme: "Direção Defensiva",
+                question: "A atitude defensiva inclui:",
+                options: ["Impaciência", "Cortesia", "Agressividade", "Competição"],
+                correct: 1
+            },
+
+            // MEIO AMBIENTE (24 questões)
+	    {
+                theme: "Meio Ambiente",
+                question: "Entre os combustíveis abaixo, qual é considerado menos poluente para o meio ambiente?",
+                options: ["Diesel comum", "Gasolina aditivada", "Etanol (álcool combustível)", "Óleo queimado"],
+                correct: 2
+            },
+	    {
+                theme: "Meio Ambiente",
+                question: "A emissão excessiva de fumaça preta por um veículo indica:",
+                options: ["Que o veículo está em boas condições", "Que há problemas mecânicos e excesso de poluentes", "Que o combustível está muito limpo", "Que o motor está mais potente"],
+                correct: 1
+            },
+	    {
+                theme: "Meio Ambiente",
+                question: "Qual atitude a seguir é considerada ecologicamente correta no uso do veículo?",
+                options: ["Manter o motor ligado por longos períodos para economizar na próxima partida", "Fazer manutenção preventiva e calibrar os pneus regularmente", "Jogar lixo pela janela apenas em locais com vegetação", "Usar combustível adulterado para reduzir gastos"],
+                correct: 1
+            },
+	    {
+                theme: "Meio Ambiente",
+                question: "Qual é a principal contribuição dos veículos automotores para a poluição ambiental?",
+                options: ["Ruído gerado pelas buzinas", "Aumento do tráfego nas áreas urbanas", "Ocupação das calçadas", "Emissão de gases poluentes pela queima de combustíveis fósseis"],
+                correct: 3
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Qual gás é o principal poluente emitido pelos veículos?",
+                options: ["Oxigênio", "Nitrogênio", "Monóxido de carbono", "Hidrogênio"],
+                correct: 2
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O que é inspeção veicular?",
+                options: ["Verificação de documentos", "Controle de emissões", "Revisão mecânica", "Teste de direção"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Carros flex podem usar:",
+                options: ["Apenas gasolina", "Apenas álcool", "Gasolina e álcool", "Apenas diesel"],
+                correct: 2
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O catalisador serve para:",
+                options: ["Economizar combustível", "Reduzir emissões", "Aumentar potência", "Resfriar motor"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "A fumaça preta do escapamento indica:",
+                options: ["Motor frio", "Queima incompleta", "Motor novo", "Combustível de qualidade"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Veículos elétricos são:",
+                options: ["Mais poluentes", "Menos eficientes", "Mais sustentáveis", "Mais caros sempre"],
+                correct: 2
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O álcool combustível é:",
+                options: ["Mais poluente", "Renovável", "Fóssil", "Sintético"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "A manutenção regular do motor:",
+                options: ["Aumenta poluição", "Reduz poluição", "Não afeta poluição", "Danifica o ambiente"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O biodiesel é produzido a partir de:",
+                options: ["Petróleo", "Óleos vegetais", "Carvão", "Gás natural"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Pneus descartados incorretamente:",
+                options: ["Não causam problemas", "Poluem o ambiente", "São biodegradáveis", "Podem ser queimados"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "A emissão de CO2 contribui para:",
+                options: ["Resfriamento global", "Aquecimento global", "Purificação do ar", "Chuva ácida apenas"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O filtro de ar sujo:",
+                options: ["Economiza combustível", "Aumenta consumo", "Não afeta nada", "Melhora performance"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Óleo lubrificante usado deve ser:",
+                options: ["Jogado no lixo", "Derramado no chão", "Reciclado", "Queimado"],
+                correct: 2
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "A calibragem incorreta dos pneus:",
+                options: ["Economiza combustível", "Aumenta consumo", "Não afeta nada", "Melhora aderência"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Veículos com motor desregulado:",
+                options: ["Poluem menos", "Poluem mais", "Não poluem", "São mais eficientes"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O transporte público é:",
+                options: ["Mais poluente", "Menos sustentável", "Mais sustentável", "Igual ao individual"],
+                correct: 2
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "A lavagem do veículo deve ser feita:",
+                options: ["Na rua", "Em casa", "Em lava-rápidos", "Em qualquer lugar"],
+                correct: 2
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "O ar condicionado automotivo pode conter:",
+                options: ["Gases inofensivos", "Gases que destroem ozônio", "Apenas ar", "Oxigênio puro"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "Baterias de veículos devem ser:",
+                options: ["Jogadas no lixo", "Recicladas", "Enterradas", "Queimadas"],
+                correct: 1
+            },
+            {
+                theme: "Meio Ambiente",
+                question: "A carona solidária contribui para:",
+                options: ["Mais poluição", "Menos poluição", "Mais trânsito", "Maior consumo"],
+                correct: 1
+            },
+
+            // PRIMEIROS SOCORROS (15 questões)
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de acidente, a primeira atitude é:",
+                options: ["Mover a vítima", "Sinalizar o local", "Dar água", "Aplicar torniquete"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Para uma vítima inconsciente, deve-se:",
+                options: ["Dar água", "Verificar respiração", "Movimentar", "Dar comida"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de hemorragia, deve-se:",
+                options: ["Fazer torniquete", "Pressionar o local", "Dar água", "Movimentar"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "O número do SAMU é:",
+                options: ["190", "192", "193", "199"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Vítima de trauma não deve ser:",
+                options: ["Socorrida", "Movimentada", "Observada", "Protegida"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de queimadura, deve-se:",
+                options: ["Aplicar gelo", "Aplicar água fria", "Aplicar manteiga", "Estourar bolhas"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Para verificar a pulsação, palpa-se:",
+                options: ["O peito", "O pescoço ou punho", "A testa", "O abdômen"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de engasgo, deve-se:",
+                options: ["Dar água", "Bater nas costas", "Manobra de Heimlich", "Dar comida"],
+                correct: 2
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Vítima em estado de choque deve:",
+                options: ["Ficar em pé", "Deitar com pernas elevadas", "Sentar", "Caminhar"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de fratura exposta:",
+                options: ["Colocar osso no lugar", "Não mexer", "Dar analgésico", "Movimentar"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "A posição lateral de segurança é usada para:",
+                options: ["Vítimas conscientes", "Vítimas inconscientes", "Qualquer vítima", "Vítimas em pé"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de convulsão, deve-se:",
+                options: ["Segurar a vítima", "Proteger a cabeça", "Dar água", "Colocar objeto na boca"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Kit de primeiros socorros deve conter:",
+                options: ["Apenas remédios", "Materiais básicos", "Equipamentos caros", "Só bandagens"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Em caso de parada cardíaca, deve-se:",
+                options: ["Esperar socorro", "Fazer massagem cardíaca", "Dar água", "Movimentar"],
+                correct: 1
+            },
+            {
+                theme: "Primeiros Socorros",
+                question: "Ao socorrer uma vítima, é importante:",
+                options: ["Agir rapidamente", "Manter calma", "Gritar", "Correr"],
+                correct: 1
+            },
+
+            // MECÂNICA BÁSICA (22 questões)
+	    {
+                theme: "Mecânica Básica",
+                question: "Qual a função da embreagem nos veículos manuais?",
+                options: ["Parar o carro automaticamente", "Controlar a direção", "transmitir ou interromper o torque do motor às rodas", "Aumentar a potência do motor"],
+                correct: 2
+            },
+	    {
+                theme: "Mecânica Básica",
+                question: "Os quatro tempos de um motor de combustão interna são:",
+                options: ["alimentação, injeção, ignição e explosão ", "ignição, escapamento, compressão e alimentação", "admissão, lubrificação, explosão e escapamento", "admissão, compressão, explosão e escapamento"],
+                correct: 3
+            },
+	    {
+                theme: "Mecânica Básica",
+                question: "UMAS DAS PEÇAS FUNDAMENTAIS DO SISTEMA DE ARREFECIMENTO É:",
+                options: ["A BOMBA DE COMBUSTIVEL", "O DISTRIBUIDOR", "A VENTOINHA", "VELAS DE IQNIÇÃO"],
+                correct: 2
+            },
+	    {
+                theme: "Mecânica Básica",
+                question: "A luz da bateria acesa no painel indica:",
+                options: ["Que a bateria está totalmente carregada", "Que o sistema de carga (alternador) pode estar com problema", "Que é necessário trocar o filtro de ar", "Que os pneus estão com baixa pressão"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "Qual é o risco de circular com pneus carecas (sem sulcos visíveis)?",
+                options: ["Melhora a frenagem em pisos molhados", "Reduz o consumo de combustível", "Aumenta a estabilidade do veículo", "Eleva o risco de aquaplanagem e acidentes"],
+                correct: 2
+            },
+	    {
+                theme: "Mecânica Básica",
+                question: "Qual o nome do componente responsável por dar a partida elétrica no motor do veículo?",
+                options: ["Vela de ignição", "Radiador", "Alternador", "Motor de arranque (motor de partida)"],
+                correct: 3
+            },
+	    {
+                theme: "Mecânica Básica",
+                question: "Qual é a principal função do óleo do motor?",
+                options: ["Reduzir o consumo de combustível", "Lubrificar e proteger as peças internas do motor", "Resfriar os pneus do veículo", "Aumentar a potência do motor"],
+                correct: 1
+            },
+	    {
+                theme: "Mecânica Básica",
+                question: "A função do radiador é:",
+                options: ["Aquecer o motor", "Resfriar o motor", "Lubrificar", "Filtrar ar"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "O óleo do motor serve para:",
+                options: ["Resfriar", "Lubrificar", "Limpar", "Todas as alternativas"],
+                correct: 3
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A bateria do carro é:",
+                options: ["12V", "24V", "110V", "220V"],
+                correct: 0
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "O alternador serve para:",
+                options: ["Arrancar o motor", "Carregar a bateria", "Resfriar", "Acelerar"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A embreagem fica entre:",
+                options: ["Motor e câmbio", "Câmbio e diferencial", "Roda e freio", "Motor e radiador"],
+                correct: 0
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "Os amortecedores servem para:",
+                options: ["Acelerar", "Frear", "Absorver impactos", "Dirigir"],
+                correct: 2
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A correia dentada move:",
+                options: ["Alternador", "Válvulas", "Radiador", "Bateria"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "O filtro de ar deve ser:",
+                options: ["Sempre sujo", "Limpo regularmente", "Molhado", "Retirado"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A vela de ignição serve para:",
+                options: ["Lubrificar", "Resfriar", "Fazer centelha", "Filtrar"],
+                correct: 2
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "O sistema de freios usa:",
+                options: ["Água", "Óleo", "Fluido de freio", "Gasolina"],
+                correct: 2
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A pressão dos pneus deve ser verificada:",
+                options: ["Semanalmente", "Mensalmente", "Anualmente", "Nunca"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "O motor aquecendo pode indicar:",
+                options: ["Problema no radiador", "Falta de óleo", "Correia partida", "Todas as alternativas"],
+                correct: 3
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A luz do óleo acesa indica:",
+                options: ["Óleo em excesso", "Pressão baixa", "Óleo novo", "Nada importante"],
+                correct: 1
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "O combustível chega ao motor através:",
+                options: ["Da bomba", "Do radiador", "Da bateria", "Do óleo"],
+                correct: 0
+            },
+            {
+                theme: "Mecânica Básica",
+                question: "A direção hidráulica usa:",
+                options: ["Água", "Óleo específico", "Combustível", "Ar"],
+                correct: 1
+            }
+    	    
+        ];
+
+        // Variáveis globais
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let timeRemaining = 50 * 60; // 50 minutos em segundos
+        let timerInterval;
+        let testStarted = false;
+
+        // Função para embaralhar array
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Função para iniciar simulação
+        function startSimulation() {
+            // Embaralha as questões e seleciona 30 aleatórias
+            const shuffledQuestions = shuffleArray(questionsDatabase);
+            currentQuestions = shuffledQuestions.slice(0, 30);
+            
+            // Inicializa respostas do usuário
+            userAnswers = new Array(30).fill(null);
+            
+            // Mostra tela de questões
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+            document.getElementById('statsBar').style.display = 'flex';
+            
+            // Inicia timer
+            startTimer();
+            
+            // Carrega primeira questão
+            loadQuestion(0);
+            
+            testStarted = true;
+        }
+
+        // Função para iniciar timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    finishTest();
+                }
+            }, 1000);
+        }
+
+        // Função para atualizar display do timer
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Muda cor quando restam 10 minutos
+            if (timeRemaining <= 600) {
+                timerElement.style.color = '#dc3545';
+            }
+        }
+
+        // Função para carregar questão
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const question = currentQuestions[index];
+            
+            document.getElementById('questionNumber').textContent = `Questão ${index + 1}`;
+            document.getElementById('questionTheme').textContent = question.theme;
+            document.getElementById('questionText').innerHTML = question.question;
+            document.getElementById('progress').textContent = `Questão ${index + 1} de 30`;
+            
+            // Carrega opções
+            const optionsHtml = question.options.map((option, i) => `
+                <li class="option">
+                    <label>
+                        <input type="radio" name="question${index}" value="${i}" 
+                               ${userAnswers[index] === i ? 'checked' : ''}
+                               onchange="selectAnswer(${i})">
+                        ${option}
+                    </label>
+                </li>
+            `).join('');
+            
+            document.getElementById('questionOptions').innerHTML = optionsHtml;
+            
+            // Atualiza botões de navegação
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === 29 ? 'none' : 'inline-block';
+            document.getElementById('finishBtn').style.display = index === 29 ? 'inline-block' : 'none';
+        }
+
+        // Função para selecionar resposta
+        function selectAnswer(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+        }
+
+        // Função para questão anterior
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        // Função para próxima questão
+        function nextQuestion() {
+            if (currentQuestionIndex < 29) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        // Função para finalizar teste
+        function finishTest() {
+            clearInterval(timerInterval);
+            calculateResults();
+            showResults();
+        }
+
+        // Função para calcular resultados
+        function calculateResults() {
+            let correctAnswers = 0;
+            const themeStats = {};
+            
+            // Inicializa estatísticas por tema
+            const themes = ['Legislação de Trânsito', 'Direção Defensiva', 'Meio Ambiente', 'Primeiros Socorros', 'Mecânica Básica'];
+            themes.forEach(theme => {
+                themeStats[theme] = { correct: 0, total: 0 };
+            });
+            
+            // Calcula acertos
+            currentQuestions.forEach((question, index) => {
+                themeStats[question.theme].total++;
+                
+                if (userAnswers[index] === question.correct) {
+                    correctAnswers++;
+                    themeStats[question.theme].correct++;
+                }
+            });
+            
+            // Armazena resultados globalmente
+            window.testResults = {
+                correctAnswers,
+                totalQuestions: 30,
+                percentage: Math.round((correctAnswers / 30) * 100),
+                approved: correctAnswers >= 21,
+                themeStats,
+                timeSpent: (50 * 60) - timeRemaining
+            };
+        }
+
+        // Função para mostrar resultados
+        function showResults() {
+            const results = window.testResults;
+            
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            document.getElementById('statsBar').style.display = 'none';
+            
+            // Atualiza pontuação
+            const scoreElement = document.getElementById('resultScore');
+            scoreElement.textContent = `${results.percentage}%`;
+            scoreElement.className = `result-score ${results.approved ? 'approved' : 'failed'}`;
+            
+            // Detalhes do resultado
+            const timeSpentMinutes = Math.floor(results.timeSpent / 60);
+            const timeSpentSeconds = results.timeSpent % 60;
+            
+            document.getElementById('resultDetails').innerHTML = `
+                <h3>${results.approved ? '🎉 Parabéns! Você foi APROVADO!' : '😞 Infelizmente você foi REPROVADO'}</h3>
+                <p><strong>Acertos:</strong> ${results.correctAnswers} de ${results.totalQuestions} questões</p>
+                <p><strong>Tempo gasto:</strong> ${timeSpentMinutes}m ${timeSpentSeconds}s</p>
+                <p><strong>Mínimo para aprovação:</strong> 21 acertos (70%)</p>
+            `;
+            
+            // Breakdown por tema
+            const breakdownHtml = Object.entries(results.themeStats).map(([theme, stats]) => {
+                const percentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+                return `
+                    <div class="theme-result">
+                        <h4>${theme}</h4>
+                        <p>${stats.correct}/${stats.total} (${percentage}%)</p>
+                        <div style="background: #e9ecef; height: 10px; border-radius: 5px; margin-top: 10px;">
+                            <div style="background: ${percentage >= 70 ? '#28a745' : '#dc3545'}; height: 100%; width: ${percentage}%; border-radius: 5px;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('resultBreakdown').innerHTML = breakdownHtml;
+        }
+
+        // Função para revisar respostas
+        function reviewAnswers() {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+            document.getElementById('statsBar').style.display = 'flex';
+            
+            // Desabilita timer
+            document.getElementById('timer').textContent = 'REVISÃO';
+            
+            // Modifica interface para revisão
+            loadQuestionForReview(0);
+        }
+
+        // Função para carregar questão na revisão
+        function loadQuestionForReview(index) {
+            currentQuestionIndex = index;
+            const question = currentQuestions[index];
+            const userAnswer = userAnswers[index];
+            const correctAnswer = question.correct;
+            
+            document.getElementById('questionNumber').textContent = `Questão ${index + 1}`;
+            document.getElementById('questionTheme').textContent = question.theme;
+            document.getElementById('questionText').innerHTML = question.question;
+            document.getElementById('progress').textContent = `Questão ${index + 1} de 30`;
+            
+            // Carrega opções com indicação de resposta correta
+            const optionsHtml = question.options.map((option, i) => {
+                let optionClass = 'option';
+                if (i === correctAnswer) optionClass += ' correct';
+                if (i === userAnswer && userAnswer !== correctAnswer) optionClass += ' incorrect';
+                if (i === userAnswer) optionClass += ' selected';
+                
+                return `
+                    <li class="${optionClass}">
+                        <label>
+                            <input type="radio" name="question${index}" value="${i}" 
+                                   ${userAnswer === i ? 'checked' : ''} disabled>
+                            ${option}
+                            ${i === correctAnswer ? ' ✓' : ''}
+                            ${i === userAnswer && userAnswer !== correctAnswer ? ' ✗' : ''}
+                        </label>
+                    </li>
+                `;
+            }).join('');
+            
+            document.getElementById('questionOptions').innerHTML = optionsHtml;
+            
+            // Atualiza botões de navegação
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').textContent = index === 29 ? 'Finalizar Revisão' : 'Próxima →';
+            document.getElementById('finishBtn').style.display = 'none';
+            
+            // Modifica comportamento do botão próxima
+            document.getElementById('nextBtn').onclick = function() {
+                if (index === 29) {
+                    showResults();
+                } else {
+                    loadQuestionForReview(index + 1);
+                }
+            };
+            
+            // Modifica comportamento do botão anterior
+            document.getElementById('prevBtn').onclick = function() {
+                if (index > 0) {
+                    loadQuestionForReview(index - 1);
+                }
+            };
+        }
+
+        // Função para resetar simulação
+        function resetSimulation() {
+            // Reset variáveis
+            currentQuestions = [];
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            timeRemaining = 50 * 60;
+            testStarted = false;
+            
+            // Limpa timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            // Mostra tela inicial
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('statsBar').style.display = 'none';
+            
+            // Reset botões de navegação
+            document.getElementById('nextBtn').onclick = nextQuestion;
+            document.getElementById('prevBtn').onclick = previousQuestion;
+            document.getElementById('nextBtn').textContent = 'Próxima →';
+        }
+
+        // Previne sair da página durante o teste
+        window.addEventListener('beforeunload', function(e) {
+            if (testStarted && timeRemaining > 0) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
